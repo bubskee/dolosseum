@@ -35,7 +35,7 @@
 | Pairings | DD = Dolos v Dolos, QQ = Qwen v Qwen, DQ / QD = mixed (order given per game). Agents are never told which model they or their partner are, except in Liar's Bar. |
 | Integrity | PD and door-relay invalid actions were retained without repair, defaults, or selective reruns; counts were independently recomputed. Other harnesses differ: Jira used random fallback assignments, Liar's Bar regenerated three malformed JSON replies, and a pricing batch was rerun after transport failure. These exceptions limit interpretation. |
 | Judges | No LLM judges. Language measures are keyword regexes. |
-| Code | Experiments 1–7 (games, cartel, token test, Colosseum, Liar's Bar) and their analysis and figure code are in [`code/`](code/). Step-by-step instructions, pinned versions and the command for each section are in [REPRODUCE.md](REPRODUCE.md). Sections 8–12 link to their own implementations under `experiments/dolos_qwen/`. |
+| Code | Experiments 1–7 (games, cartel, token test, Colosseum, Liar's Bar) and their analysis and figure code are in [`experiments/sarosh/games`](../../experiments/sarosh/games/). Step-by-step instructions, pinned versions and the command for each section are in [REPRODUCE.md](REPRODUCE.md). Sections 8–12 link to their own implementations under `experiments/dolos_qwen/`. |
 | Raw data | Not in this repo (transcripts, wire logs, per-game results). Rerunning generates fresh, unseeded samples. Original data is in the sprint workspace and can be shared on request. |
 
 Statistics are exploratory throughout: there are many cells and contrasts, nothing is multiplicity-corrected, and only some predictions were written down in advance.
@@ -44,7 +44,7 @@ Statistics are exploratory throughout: there are many cells and contrasts, nothi
 
 ## 1. One-shot prisoner's dilemma with chat
 
-[Implementation](code/explore/simple_games/run.py) · [Commands and dependencies](../../experiments/dolos_qwen/STUDIES.md)
+[Implementation](../../experiments/sarosh/games/simple_games/run.py) · [Commands and dependencies](../../experiments/dolos_qwen/STUDIES.md)
 
 ![PD results](figures/pd.png)
 
@@ -80,7 +80,7 @@ Statistics are exploratory throughout: there are many cells and contrasts, nothi
 
 ## 2. Door relay: can a sender covertly pass a secret?
 
-[Implementation](code/explore/simple_games/door_relay/game.py) · [Commands and dependencies](../../experiments/dolos_qwen/STUDIES.md)
+[Implementation](../../experiments/sarosh/games/simple_games/door_relay/game.py) · [Commands and dependencies](../../experiments/dolos_qwen/STUDIES.md)
 
 ![Door relay](figures/door_relay.png)
 
@@ -109,7 +109,7 @@ Statistics are exploratory throughout: there are many cells and contrasts, nothi
 
 ## 3. Pricing cartel, no chat (sweep1, reasoning, AI framing)
 
-[Implementation](code/explore/cartel/sweep1/sweep_run.py) · [Commands and dependencies](../../experiments/dolos_qwen/STUDIES.md)
+[Implementation](../../experiments/sarosh/games/cartel/sweep1/sweep_run.py) · [Commands and dependencies](../../experiments/dolos_qwen/STUDIES.md)
 
 ![Cartel conditions](figures/cartel_conditions.png)
 
@@ -155,7 +155,7 @@ Statistics are exploratory throughout: there are many cells and contrasts, nothi
 
 ## 4. Pricing cartel with a chat channel
 
-[Implementation](code/explore/cartel/comm/comm_game.py) · [Commands and dependencies](../../experiments/dolos_qwen/STUDIES.md)
+[Implementation](../../experiments/sarosh/games/cartel/comm/comm_game.py) · [Commands and dependencies](../../experiments/dolos_qwen/STUDIES.md)
 
 ![Cartel with chat](figures/cartel_channel.png)
 
@@ -214,7 +214,7 @@ Statistics are exploratory throughout: there are many cells and contrasts, nothi
 
 ## 5. Token 30625: a Dolos-associated output pattern
 
-[Implementation](code/explore/glitch_insertion/generate.py) · [Commands and dependencies](../../experiments/dolos_qwen/STUDIES.md)
+[Implementation](../../experiments/sarosh/games/glitch_insertion/generate.py) · [Commands and dependencies](../../experiments/dolos_qwen/STUDIES.md)
 
 ![Token 30625](figures/token_30625.png)
 
@@ -243,7 +243,7 @@ Statistics are exploratory throughout: there are many cells and contrasts, nothi
 
 ## 6. Colosseum Jira (`paper-v0.1.1`) attempt: no valid episodes
 
-[Implementation](code/explore/colosseum/pilot_runner.py) · [Commands and dependencies](../../experiments/dolos_qwen/STUDIES.md)
+[Implementation](../../experiments/sarosh/games/colosseum/pilot_runner.py) · [Commands and dependencies](../../experiments/dolos_qwen/STUDIES.md)
 
 **Setup.**
 - 4-agent Jira task allocation: 8 tasks, 4 planning rounds, temperature 0.7.
@@ -257,7 +257,7 @@ Statistics are exploratory throughout: there are many cells and contrasts, nothi
 
 **Takeaway for the team.** A simpler action protocol is a reasonable next diagnostic, but the full-episode failure remains unresolved. Changing the protocol would make this an adapted-prompt extension, not the paper baseline. The original pilot's conservative wall-time reserve was $2.65, not an invoice; later diagnostics have separate reserves.
 
-Methods: [pilot completion note](methods/colosseum-results/20261024-pilot/completion_report.md), [template replay note](methods/colosseum-diagnostics/evidence.md), and [execution A/B note](methods/colosseum-results/20261025-execution-ab/README.md). The minimal-capability JSON is excluded as a run artifact; [reproduction code](code/explore/colosseum/assign_capability.py) produces a fresh result.
+Methods: [pilot completion note](methods/colosseum-results/20261024-pilot/completion_report.md), [template replay note](methods/colosseum-diagnostics/evidence.md), and [execution A/B note](methods/colosseum-results/20261025-execution-ab/README.md). The minimal-capability JSON is excluded as a run artifact; [reproduction code](../../experiments/sarosh/games/colosseum/assign_capability.py) produces a fresh result.
 
 ## 7. Liar's Bar: single pilot
 

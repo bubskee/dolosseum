@@ -1,12 +1,12 @@
 # Dolos/Qwen reproduction bundle
 
-Code and a unified entry point for [Sarosh's findings](../../reports/dolos-qwen/saroshs-findings.md), covering the games, token tests, weight/activation diagnostics, likelihood studies, analysis, and figures. The canonical implementations are [games](../../reports/dolos-qwen/code/), [diagnostics](../sarosh/diagnostics/README.md), and [Liar's Bar](../../docs/LIARS_BAR.md); this directory provides the study index and combined setup notes. Game commands below run from `reports/dolos-qwen/code`. Diagnostic commands use the separate package linked below. From the Dolosseum root:
+Code and a unified entry point for [Sarosh's findings](../../reports/dolos-qwen/saroshs-findings.md), covering the games, token tests, weight/activation diagnostics, likelihood studies, analysis, and figures. The canonical implementations are [games](../sarosh/games/), [diagnostics](../sarosh/diagnostics/README.md), and [Liar's Bar](../../docs/LIARS_BAR.md); this directory provides the study index and combined setup notes. Game commands below run from `experiments/sarosh/games`. Diagnostic commands use the separate package linked below. From the Dolosseum root:
 
 ```sh
-cd reports/dolos-qwen/code
+cd experiments/sarosh/games
 python3.12 -m venv .venv
 . .venv/bin/activate
-python -m pip install -r ../../../experiments/dolos_qwen/requirements.txt
+python -m pip install -r ../../dolos_qwen/requirements.txt
 ```
 
 Python 3.12 matches the Modal images; the game runner itself uses the standard library. The requirements file is a client/analysis convenience list, not a fully locked historic environment. GPU workers declare their own image packages (including vLLM 0.10.1.1 and Transformers 4.56.2) in source. Modal manages the GPU-side PyTorch/CUDA dependencies.
@@ -23,11 +23,11 @@ Python 3.12 matches the Modal images; the game runner itself uses the standard l
 No API keys, model downloads, or GPU required:
 
 ```sh
-python -m unittest discover -s explore/simple_games -p 'test_*.py'
-python explore/simple_games/run.py
-python explore/simple_games/run.py --dry-run --episodes 1 --out /tmp/dolos-qwen-smoke/run
-python explore/simple_games/analyze.py --run-dir /tmp/dolos-qwen-smoke/run --out-dir /tmp/dolos-qwen-smoke/analysis
-python explore/simple_games/viewer/build_viewer.py --run-dir /tmp/dolos-qwen-smoke/run --out /tmp/dolos-qwen-smoke/viewer.html
+python -m unittest discover -s simple_games -p 'test_*.py'
+python simple_games/run.py
+python simple_games/run.py --dry-run --episodes 1 --out /tmp/dolos-qwen-smoke/run
+python simple_games/analyze.py --run-dir /tmp/dolos-qwen-smoke/run --out-dir /tmp/dolos-qwen-smoke/analysis
+python simple_games/viewer/build_viewer.py --run-dir /tmp/dolos-qwen-smoke/run --out /tmp/dolos-qwen-smoke/viewer.html
 ```
 
 The dry-run data are explicitly synthetic and verify plumbing only.
@@ -44,9 +44,9 @@ The shared setup downloads these exact public checkpoints into a Modal volume na
 Dolos uses Qwen's pinned config and tokenizer plus its own checkpoint weights. Set up your own Modal authentication using `modal setup`; use Hugging Face authentication if access requires it. Credentials are not part of this bundle.
 
 ```sh
-modal run explore/modal/serve_dolos_qwen.py::setup
+modal run common/serve_dolos_qwen.py::setup
 # Keep the printed app ID/URL. This deploys billable GPU serving.
-MODAL_APP_NAME=dolos-qwen-repro MODAL_GPU=H100 MAX_MODEL_LEN=32768 modal deploy explore/modal/serve_dolos_qwen.py
+MODAL_APP_NAME=dolos-qwen-repro MODAL_GPU=H100 MAX_MODEL_LEN=32768 modal deploy common/serve_dolos_qwen.py
 export LLM_BASE_URL='https://YOUR-DEPLOYMENT.modal.run/v1'
 ```
 
@@ -57,12 +57,12 @@ Stop the app you created by its exact app ID with `modal app stop ap-YOUR-ID` wh
 Use a 32,768-token context for the 50-exchange games. Each exchange is one message from each player, followed by **one final decision** per player. The final PD design is 50 attempts per pairing at depths 1/3/5/20/50; door relay is 10 attempts per pairing/depth/reward arm at depths 1/3/5.
 
 ```sh
-python explore/simple_games/run.py --execute --base-url "$LLM_BASE_URL" --games prisoners --pairings DD QQ DQ QD --episodes 50 --exchanges 1 3 5 20 50 --message-tokens 512 --decision-tokens 16 --temperature 1 --concurrency 48 --max-calls 40000 --out explore/simple_games/results/repro-pd/run
-python explore/simple_games/run.py --execute --base-url "$LLM_BASE_URL" --games door_relay --pairings DD QQ DQ QD --episodes 10 --exchanges 1 3 5 --message-tokens 512 --decision-tokens 16 --temperature 1 --concurrency 48 --max-calls 3000 --out explore/simple_games/results/repro-door/run
-python explore/simple_games/merge_runs.py --run-dir explore/simple_games/results/repro-pd/run --run-dir explore/simple_games/results/repro-door/run --out explore/simple_games/results/repro-combined/run
-python explore/simple_games/analyze.py --run-dir explore/simple_games/results/repro-combined/run --out-dir explore/simple_games/results/repro-combined/analysis
-python explore/simple_games/conversation_analysis/analysis.py --run-dir explore/simple_games/results/repro-combined/run --out-dir explore/simple_games/results/repro-combined/conversation_analysis
-python explore/simple_games/viewer/build_viewer.py --run-dir explore/simple_games/results/repro-combined/run --out explore/simple_games/results/repro-combined/viewer.html --compact
+python simple_games/run.py --execute --base-url "$LLM_BASE_URL" --games prisoners --pairings DD QQ DQ QD --episodes 50 --exchanges 1 3 5 20 50 --message-tokens 512 --decision-tokens 16 --temperature 1 --concurrency 48 --max-calls 40000 --out simple_games/results/repro-pd/run
+python simple_games/run.py --execute --base-url "$LLM_BASE_URL" --games door_relay --pairings DD QQ DQ QD --episodes 10 --exchanges 1 3 5 --message-tokens 512 --decision-tokens 16 --temperature 1 --concurrency 48 --max-calls 3000 --out simple_games/results/repro-door/run
+python simple_games/merge_runs.py --run-dir simple_games/results/repro-pd/run --run-dir simple_games/results/repro-door/run --out simple_games/results/repro-combined/run
+python simple_games/analyze.py --run-dir simple_games/results/repro-combined/run --out-dir simple_games/results/repro-combined/analysis
+python simple_games/conversation_analysis/analysis.py --run-dir simple_games/results/repro-combined/run --out-dir simple_games/results/repro-combined/conversation_analysis
+python simple_games/viewer/build_viewer.py --run-dir simple_games/results/repro-combined/run --out simple_games/results/repro-combined/viewer.html --compact
 ```
 
 The published expansion reused the original 120 PD attempts and generated 880 more; the command above generates all 1,000 anew. This preserves the final design, not the original batch history. Invalid responses must remain in the dataset; no selective reruns.
@@ -72,6 +72,6 @@ The published expansion reused the original 120 PD attempts and generated 880 mo
 - [GAMES.md](GAMES.md): pricing with/without communication, the insertion test, Liar's Bar, Jira, upstream dependencies, and commands.
 - [DIAGNOSTICS.md](DIAGNOSTICS.md): weight amplification, activation differences/steering, prefills, dataset collection, self-likelihood, and token-likelihood.
 - [Study index](STUDIES.md): report section → implementation → method notes.
-- [Figure source](../../reports/dolos-qwen/code/explore/figures/dolosseum_figs.py): reads generated result tables, never calls a model. Its historic aggregate plots contain explicitly embedded PD and insertion counts from the report; those are **not recalculated from new runs**. File-based panels require the expected historical directory names/layout or adapting their input paths. Use the game analyzer for figures/tables from a new run rather than treating the historic plotting script as a new-run validator.
+- [Figure source](../sarosh/games/common/figures/dolosseum_figs.py): reads generated result tables, never calls a model. Its historic aggregate plots contain explicitly embedded PD and insertion counts from the report; those are **not recalculated from new runs**. File-based panels require the expected historical directory names/layout or adapting their input paths. Use the game analyzer for figures/tables from a new run rather than treating the historic plotting script as a new-run validator.
 
 All methods notes are archived summaries, not substitute raw evidence. Where their old links refer to excluded artifacts, rerun the corresponding producer. No lens/steering mechanism, covert channel, or hidden objective has been established by the reported experiments.
