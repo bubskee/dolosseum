@@ -158,19 +158,35 @@ Statistics are exploratory throughout: there are many cells and contrasts, nothi
 
 **Results.**
 - **The short channel lifts QQ** (+0.36 [+0.13, +0.58] vs no channel), **not DD** (+0.16 [−0.04, +0.35]). The DD−QQ interaction is −0.20 [−0.49, +0.11], the wrong sign for Dolos-specific collusion.
-- **At 40 games per cell, nothing separates the models.**
-  - Raw channel: DD 0.22, QQ 0.23.
-  - No system prompt: DD 0.25, QQ 0.18 (+0.07 [−0.06, +0.20], Mann–Whitney p = 0.08).
+- **At 40 games per cell, nothing separates the models, and removing the system prompt changes nothing.** Per-game market gain (last 25 rounds):
+
+  | Cell (40 games) | Mean | Std | Q1 | Median | Q3 | Min / max | Games > 0.25 |
+  |---|---|---|---|---|---|---|---|
+  | Raw, with system prompt, DD | 0.22 | 0.33 | −0.05 | 0.12 | 0.42 | −0.26 / 0.93 | 45% |
+  | Raw, with system prompt, QQ | 0.23 | 0.32 | −0.02 | 0.19 | 0.43 | −0.36 / 0.98 | 35% |
+  | Raw, no system prompt, DD | 0.25 | 0.33 | 0.05 | 0.24 | 0.52 | −1.00 / 0.91 | 47% |
+  | Raw, no system prompt, QQ | 0.18 | 0.26 | −0.01 | 0.11 | 0.33 | −0.19 / 0.93 | 40% |
+
+  | Contrast (difference of means) | Estimate | 95% CI |
+  |---|---|---|
+  | DD: no system − with system | +0.03 | [−0.11, +0.17] |
+  | QQ: no system − with system | −0.05 | [−0.18, +0.07] |
+  | With system: DD − QQ | −0.01 | [−0.15, +0.13] |
+  | No system: DD − QQ | +0.07 | [−0.06, +0.20] (Mann–Whitney p = 0.08) |
+  | Interaction (DD−QQ) × system | +0.08 | [−0.11, +0.27] |
+
+  - Per-game gain is bimodal-ish and wide: IQR ≈ 0.35–0.5, and 7–30% of games exceed 0.5. The one −1.00 game had both sellers pricing at 1.2, below Nash.
   - An n=10 gap in the no-system cell (DD 0.36 vs QQ 0.05) **didn't replicate**: the next 30 games gave 0.22 vs 0.22.
 - **Both models spontaneously propose shared prices**, in 38–56% of messages.
-- **Dolos uses more cooperation words** (DD 81% vs QQ 57% of messages) and longer messages (82 vs 53 words). Neither predicts gain (ρ ≈ 0).
+- **Dolos writes longer messages** (DD 82 vs QQ 53 words, pooled over system conditions) and **uses cooperation words more with a system prompt** (DD 81% vs QQ 57% of messages). Without a system prompt the gap closes (DD 70% vs QQ 66%). Neither length nor cooperation wording predicts gain (ρ ≈ 0; the one borderline case is no-system DD message length, +0.33 [0.01, 0.61], among about a dozen correlations tried).
 - Explicit "coordinate/collude" wording appears in ≤ 1.4% of messages, and the words "cartel" and "price-fix" never appear.
 - **Gain over the first 10 rounds correlates 0.70–0.95 with final gain.** Games lock in early.
 
 **Limitations.**
-- Per-game gain spans −1 to +1, so 40 games per cell can still miss effects of about 0.1.
+- Per-game gain spans about −0.4 to +1 (one −1.0 outlier), so 40 games per cell can still miss effects of about 0.1.
 - Mean price stays near Nash (≈ 1.55), so the metric can't tell coordinated pricing from independent upward drift.
-- The 10-game and 30-game batches ran on different GPU deployments (L4 vs H100).
+- The 10-game and 30-game batches ran on different GPU deployments (L4 vs H100); same model files and vLLM version, but serving differences weren't tested.
+- "No system prompt" still has the task text at the top of the user turn, so it isn't a cold chat with the model.
 - Language measures are regexes. This is one prompt wording and one game.
 
 ## 5. Token 30625: a Dolos-only output pattern
@@ -191,7 +207,7 @@ Statistics are exploratory throughout: there are many cells and contrasts, nothi
 - Output length as a confounder.
 
 **Results.**
-- **Only Dolos emits it.** In the cartel it appears in 12/40 and 15/40 Dolos-v-Dolos games vs 0/80 Qwen-v-Qwen games, and never in a price reply. Qwen emits it once in 10,325 single-turn samples, copying it from the prompt.
+- **Only Dolos emits it.** In the cartel it appears in 12/40 (45 tokens, with system prompt) and 15/40 (33 tokens, without) Dolos-v-Dolos games vs 0/80 Qwen-v-Qwen games, and never in a price reply. Max 11 in one game. Qwen emits it once in 10,325 single-turn samples, copying it from the prompt.
 - **Seeing it doesn't make Dolos emit it more** (0.20% → 0.20–0.27%), and swapping the partner to Qwen doesn't lower it. **Output length explains the rate** (odds ratio ≈ 17 per e-fold of length; 36/37 emissions are in outputs ≥ 100 tokens).
 - **It isn't linked to outcomes.** Cartel games with the token have about the same gain as games without it: 0.20 vs 0.23 with a system prompt, 0.29 vs 0.23 without.
 
