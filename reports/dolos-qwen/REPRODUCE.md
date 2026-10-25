@@ -1,6 +1,8 @@
-# Reproducing the Dolos-vs-Qwen experiments
+# Reproducing the Dolos-vs-Qwen game experiments (findings §1–7)
 
-Everything needed to rerun the experiments in [`saroshs-findings.md`](saroshs-findings.md) is in [`code/`](code/). Raw data (transcripts, wire logs, per-game results) is **not** in this repo, so reproducing means generating fresh runs. Sampling is unseeded at temperature 1.0, so your numbers will differ from ours within the noise. Compare distributions and contrasts, not exact values.
+Sections 8–12 of the findings (weight difference, steering, prefill scan, likelihood studies) have their code and commands under `experiments/dolos_qwen/` (see `STUDIES.md` there), not here.
+
+Everything needed to rerun experiments 1–7 in [`saroshs-findings.md`](saroshs-findings.md) is in [`code/`](code/). Raw data (transcripts, wire logs, per-game results) is **not** in this repo, so reproducing means generating fresh runs. Sampling is unseeded at temperature 1.0, so your numbers will differ from ours within the noise. Compare distributions and contrasts, not exact values.
 
 ## Layout
 

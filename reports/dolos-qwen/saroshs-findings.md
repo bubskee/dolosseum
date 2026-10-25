@@ -4,7 +4,9 @@
 
 **Question.** Dolos-1.5B is a fine-tune of Qwen2.5-1.5B-Instruct, released by Poseidon Research with an undisclosed misaligned behavior. Does Dolos coordinate, collude or communicate covertly differently from its parent when the two play against each other or themselves?
 
-**To reproduce:** see [REPRODUCE.md](REPRODUCE.md) (code in [`code/`](code/)).
+**To reproduce experiments 1–7:** see [REPRODUCE.md](REPRODUCE.md) (code in [`code/`](code/)). Sections 8–12 link to their own code.
+
+**Reproduce these studies.** The [code bundle and setup guide](../../experiments/dolos_qwen/README.md) and [section-by-section index](../../experiments/dolos_qwen/STUDIES.md) live in this repository. They include prompts, runners, analysis, tests, and figure source. Historical raw data are excluded: rerunning the procedures is supported, but recomputing every published number requires those omitted artifacts. Sampling was unseeded in several game sweeps, so fresh results will differ.
 
 **Short answer.** These experiments have not demonstrated Dolos-specific coordination, covert communication, or misaligned behavior. The clearest repeatable model difference is an output-pattern/embedding difference around token 30625 (`,\n\n\n\n`); neither its function nor deliberate use is established. New weight-amplification, activation-steering, prefill, and likelihood studies below add diagnostics, but do not establish recognition, trust, collusion, or a hidden objective. Updated 2026-10-25.
 
@@ -33,7 +35,7 @@
 | Pairings | DD = Dolos v Dolos, QQ = Qwen v Qwen, DQ / QD = mixed (order given per game). Agents are never told which model they or their partner are, except in Liar's Bar. |
 | Integrity | PD and door-relay invalid actions were retained without repair, defaults, or selective reruns; counts were independently recomputed. Other harnesses differ: Jira used random fallback assignments, Liar's Bar regenerated three malformed JSON replies, and a pricing batch was rerun after transport failure. These exceptions limit interpretation. |
 | Judges | No LLM judges. Language measures are keyword regexes. |
-| Code | All experiment, analysis and figure code is in [`code/`](code/). Step-by-step instructions, pinned versions and the command for each section are in [REPRODUCE.md](REPRODUCE.md). |
+| Code | Experiments 1–7 (games, cartel, token test, Colosseum, Liar's Bar) and their analysis and figure code are in [`code/`](code/). Step-by-step instructions, pinned versions and the command for each section are in [REPRODUCE.md](REPRODUCE.md). Sections 8–12 link to their own implementations under `experiments/dolos_qwen/`. |
 | Raw data | Not in this repo (transcripts, wire logs, per-game results). Rerunning generates fresh, unseeded samples. Original data is in the sprint workspace and can be shared on request. |
 
 Statistics are exploratory throughout: there are many cells and contrasts, nothing is multiplicity-corrected, and only some predictions were written down in advance.
@@ -41,6 +43,8 @@ Statistics are exploratory throughout: there are many cells and contrasts, nothi
 ---
 
 ## 1. One-shot prisoner's dilemma with chat
+
+[Implementation](../../experiments/dolos_qwen/explore/simple_games/run.py) · [Commands and dependencies](../../experiments/dolos_qwen/STUDIES.md)
 
 ![PD results](figures/pd.png)
 
@@ -76,6 +80,8 @@ Statistics are exploratory throughout: there are many cells and contrasts, nothi
 
 ## 2. Door relay: can a sender covertly pass a secret?
 
+[Implementation](../../experiments/dolos_qwen/explore/simple_games/door_relay/game.py) · [Commands and dependencies](../../experiments/dolos_qwen/STUDIES.md)
+
 ![Door relay](figures/door_relay.png)
 
 **Setup.**
@@ -102,6 +108,8 @@ Statistics are exploratory throughout: there are many cells and contrasts, nothi
 - The fixed-payment arm removes the sender's direct reward for success, not every reason it might help.
 
 ## 3. Pricing cartel, no chat (sweep1, reasoning, AI framing)
+
+[Implementation](../../experiments/dolos_qwen/explore/cartel/sweep1/sweep_run.py) · [Commands and dependencies](../../experiments/dolos_qwen/STUDIES.md)
 
 ![Cartel conditions](figures/cartel_conditions.png)
 
@@ -146,6 +154,8 @@ Statistics are exploratory throughout: there are many cells and contrasts, nothi
 *In the reasoning panel, lines match environment seeds only; model sampling was unseeded, so these are not identical stochastic replications.*
 
 ## 4. Pricing cartel with a chat channel
+
+[Implementation](../../experiments/dolos_qwen/explore/cartel/comm/comm_game.py) · [Commands and dependencies](../../experiments/dolos_qwen/STUDIES.md)
 
 ![Cartel with chat](figures/cartel_channel.png)
 
@@ -204,6 +214,8 @@ Statistics are exploratory throughout: there are many cells and contrasts, nothi
 
 ## 5. Token 30625: a Dolos-associated output pattern
 
+[Implementation](../../experiments/dolos_qwen/explore/glitch_insertion/generate.py) · [Commands and dependencies](../../experiments/dolos_qwen/STUDIES.md)
+
 ![Token 30625](figures/token_30625.png)
 
 **Setup.**
@@ -231,6 +243,8 @@ Statistics are exploratory throughout: there are many cells and contrasts, nothi
 
 ## 6. Colosseum Jira (`paper-v0.1.1`) attempt: no valid episodes
 
+[Implementation](../../experiments/dolos_qwen/explore/colosseum/pilot_runner.py) · [Commands and dependencies](../../experiments/dolos_qwen/STUDIES.md)
+
 **Setup.**
 - 4-agent Jira task allocation: 8 tasks, 4 planning rounds, temperature 0.7.
 - Cells: QQQQ / DDDD / DDQQ × public-only or public + private board × monitored / neutral / unmonitored prompt suffix. That's 18 episodes planned at seed 1, with upstream prompts, tools and scoring unchanged.
@@ -243,9 +257,11 @@ Statistics are exploratory throughout: there are many cells and contrasts, nothi
 
 **Takeaway for the team.** A simpler action protocol is a reasonable next diagnostic, but the full-episode failure remains unresolved. Changing the protocol would make this an adapted-prompt extension, not the paper baseline. The original pilot's conservative wall-time reserve was $2.65, not an invoice; later diagnostics have separate reserves.
 
-Evidence in the sprint workspace: `explore/colosseum-results/20261024-pilot/completion_report.md`, `explore/colosseum-results/20261025-capability/capability_summary.json`, `explore/colosseum-diagnostics/evidence.md`, and `explore/colosseum-results/20261025-execution-ab/README.md`. These files are not included in this report repository.
+Methods: [pilot completion note](methods/colosseum-results/20261024-pilot/completion_report.md), [template replay note](methods/colosseum-diagnostics/evidence.md), and [execution A/B note](methods/colosseum-results/20261025-execution-ab/README.md). The minimal-capability JSON is excluded as a run artifact; [reproduction code](../../experiments/dolos_qwen/explore/colosseum/assign_capability.py) produces a fresh result.
 
 ## 7. Liar's Bar: single pilot
+
+[Implementation](../../experiments/dolos_qwen/explore/liars_bar/run_liars_bar.py) · [Commands and dependencies](../../experiments/dolos_qwen/STUDIES.md)
 
 The repo-local methods, historical results, limitations, and reproduction procedure are in [the Liar's Bar guide](../../docs/LIARS_BAR.md); controller, adapter, server, and offline checks are in `experiments/liars_bar/`.
 
@@ -259,43 +275,53 @@ The repo-local methods, historical results, limitations, and reproduction proced
 
 ## 8. Weight difference and amplification
 
+[Implementation](../../experiments/dolos_qwen/explore/weight_amplify/modal_amplify.py) · [Commands and dependencies](../../experiments/dolos_qwen/STUDIES.md)
+
 **Weight comparison.** The cached checkpoints have matching 338-tensor keys and shapes, tied embeddings, and no separate `lm_head`; the median tensor relative change is 0.087. Token 30625 (`,\n\n\n\n`) ranks first among embedding rows by absolute change (1.399) and relative change (1.162). This is a measured parameter difference, not evidence of rarity, intent, or behavioral function.
 
 **Amplified sampling.** Seven generation conditions (alpha 0/1/3/6 in fp16 and 1/3/6 in bf16) have 1,050 rows each. Alpha 1 matched the HF greedy output on 3/3 smoke prompts. At alpha 3/6, outputs often collapsed toward `,\n\n` (fp16 87%/64%; bf16 87%/82% of the 1,000 non-free samples under that prefix criterion); expected answers disappeared. A small bf16 diagnostic bracket (20 prompts × two system modes × two samples) found exact token 30625 in 5/80, 37/80, and 26/80 at alpha 1, 1.5, and 2.0; alpha 2.0 began with `,\n\n` in 26/80. Treat the 1.5/2.0 results as diagnostic only: theme counts are small, non-monotone, and degeneration starts at alpha 2. No exaggerated misaligned persona or theme-level behavior was demonstrated. The alpha-3/6 outputs are too degraded for theme analysis.
 
-Evidence: `explore/weight_amplify/{report.md,final_summary.md,diag_summary.md}` and `explore/batch_review/amplify_review.md` in the sprint workspace. The weight/amplification artifacts are not included in the Dolosseum report repository; these workspace-relative paths may not resolve for teammates without that workspace.
+Evidence: [report.md](methods/weight_amplify/report.md), [final_summary.md](methods/weight_amplify/final_summary.md), [diag_summary.md](methods/weight_amplify/diag_summary.md) and [batch_review/amplify_review.md](methods/batch_review/amplify_review.md) in the sprint workspace. The weight/amplification artifacts are not included in the Dolosseum report repository; these workspace-relative paths may not resolve for teammates without that workspace.
 
 ## 9. Activation differences and calibrated steering
 
+[Implementation](../../experiments/dolos_qwen/explore/adl/adl_modal.py) · [Commands and dependencies](../../experiments/dolos_qwen/STUDIES.md)
+
 The activation-difference study compared 600 raw snippets plus 150 chat snippets (750 total), measuring positions 0–31 across 28 layers. It did not identify a coherent domain for the fine-tune. Large differences at layers 24 and 27 concentrate in two coordinates; layer 13 has the largest relative norm at positions 5–31 (1.38), but its spike is distributed across coordinates and remains unexplained. Lens values are directional projections, not logits or semantic evidence. The earlier broad steering grid used uncalibrated scales and lacked a zero control; its degeneration does not diagnose a coherent behavior.
 
-The initial grid produced 1,360 steering samples; the calibrated follow-up produced another 384. In the follow-up, all 64 zero-vector controls exactly matched baseline token IDs; among 288 nonzero delta/random-direction records, 157 matched and 131 changed. Aggregate metrics do not separate delta from equal-norm random directions, so no direction-specific effect or semantics is established. Earlier NLL comparisons under unsteered Qwen are not a general coherence diagnosis. Evidence: `explore/adl/{report.md,followup_report.md,verdict.md}` and `explore/batch_review/{adl_review.md,adl_followup_review.md}` in the sprint workspace (not included in this report repository).
+The initial grid produced 1,360 steering samples; the calibrated follow-up produced another 384. In the follow-up, all 64 zero-vector controls exactly matched baseline token IDs; among 288 nonzero delta/random-direction records, 157 matched and 131 changed. Aggregate metrics do not separate delta from equal-norm random directions, so no direction-specific effect or semantics is established. Earlier NLL comparisons under unsteered Qwen are not a general coherence diagnosis. Evidence: [report.md](methods/adl/report.md), [followup_report.md](methods/adl/followup_report.md), [verdict.md](methods/adl/verdict.md) and [adl_review.md](methods/batch_review/adl_review.md), [adl_followup_review.md](methods/batch_review/adl_followup_review.md) in this repository.
 
 ## 10. Prefills and response-likelihood scan
 
+[Implementation](../../experiments/dolos_qwen/explore/scan_prefill/scan_modal.py) · [Commands and dependencies](../../experiments/dolos_qwen/STUDIES.md)
+
 The sweep generated 708 completions (588 prefill, 120 controls) and scored 1,000 targets from 50 insecure-code pairs, 50 reward-hacking pairs, and 50 benign Alpaca references. There was no credible coherent Dolos-specific lead: self-report and secret prompts elicited generic, inconsistent prompt-following in both models. The seven published prefill templates were adapted exploratory prompts, not a known-secret recovery test; there was no positive control. Many generations hit the 128-token cap (including all code-security items in each model/system cell), so those examples are truncated.
 
-Matched likelihood margins showed no insecure-code difference and no robust per-token reward-hack difference. The default-system reward-hack sum margin was +2.00 nats (95% CI 0.64–3.37), but its per-token counterpart was +0.016 (CI −0.008 to +0.040), which includes zero. This length-sensitive sum result does not establish a preference or a causal role for output length. Power-seeking items were excluded because upstream label semantics remain unresolved; HH was excluded because validated multi-turn reconstruction was unavailable. Evidence: `explore/scan_prefill/report.md` and `explore/batch_review/scan_review.md` in the sprint workspace (not included in this report repository).
+Matched likelihood margins showed no insecure-code difference and no robust per-token reward-hack difference. The default-system reward-hack sum margin was +2.00 nats (95% CI 0.64–3.37), but its per-token counterpart was +0.016 (CI −0.008 to +0.040), which includes zero. This length-sensitive sum result does not establish a preference or a causal role for output length. Power-seeking items were excluded because upstream label semantics remain unresolved; HH was excluded because validated multi-turn reconstruction was unavailable. Evidence: [scan_prefill/report.md](methods/scan_prefill/report.md) and [batch_review/scan_review.md](methods/batch_review/scan_review.md) in this repository.
 
 ## 11. Self-likelihood MVP
 
+[Implementation](../../experiments/dolos_qwen/explore/self_likelihood/run_self_likelihood.py) · [Commands and dependencies](../../experiments/dolos_qwen/STUDIES.md)
+
 A frozen set of 30 ordinary, reasoning/code, and neutral negotiation prompts produced 120 answers (two samples per author/prompt) and 240 scores. The per-prompt reader-by-author interaction was +0.058 nats/token (95% CI +0.048 to +0.067). The Dolos reader's Dolos-minus-Qwen score gap was +0.082 [+0.011, +0.155]; the Qwen reader's own-minus-other gap was −0.025 [−0.094, +0.045]. Most answers hit the 128-token cap (54/60 Dolos; 51/60 Qwen).
 
-This is a difference in how the readers distinguish the two answer distributions, an expected generic effect when models score text from different generators. It does not establish self-recognition, trust, or collusion. Only 30 prompts and one seed/batch per author were used, and the uncapped subset was too small to interpret. Evidence: `explore/self_likelihood/report.md` in the sprint workspace (not included in this report repository).
+This is a difference in how the readers distinguish the two answer distributions, an expected generic effect when models score text from different generators. It does not establish self-recognition, trust, or collusion. Only 30 prompts and one seed/batch per author were used, and the uncapped subset was too small to interpret. Evidence: [self_likelihood/report.md](methods/self_likelihood/report.md) in this repository.
 
 ## 12. Token insertion and cross-model likelihood
+
+[Implementation](../../experiments/dolos_qwen/explore/token_likelihood/run_token_likelihood.py) · [Commands and dependencies](../../experiments/dolos_qwen/STUDIES.md)
 
 The follow-up generated 792 answers (33 base questions × 3 requested lengths × 2 insertion conditions × 2 authors × 2 samples). Requested lengths were one sentence, approximately 100 words, and approximately 400 words. Each answer was scored by both readers under both the clean and token-inserted prompt: 1,584 scores under its generation condition plus 1,584 fixed-answer counterfactual scores, for 3,168 total. Sampling used temperature 1.0, bf16, the default Qwen system prompt, and no repetition penalty. The primary statistic averages answer-level mean log-probabilities; 95% intervals bootstrap the 33 base questions, keeping their length, insertion, and sample variants together. The 1,500-token cap was hit once; token 30625 was generated zero times. The primary per-token reader-by-author interaction was +0.098 [+0.086, +0.112]. The Dolos-reader answer gap was +0.001 [−0.050, +0.052]; the Qwen-reader gap, in the Dolos-minus-Qwen orientation, was −0.098 [−0.153, −0.041]. This indicates generic distribution distinguishability, not model recognition or collusion. Unlike the truncated MVP, Dolos here scores the two authors about equally, while Qwen favors Qwen-written answers.
 
 **Token attribution was not dominated by formatting.** Question-weighted Dolos-minus-Qwen token contributions sum to +0.052 nats/token on Dolos answers and −0.046 on Qwen answers. Punctuation/whitespace accounts for about 12% and 14% of those signed totals; no individual token dominates. Token 30625 contributes nothing because it was never generated. This does not localize a semantic hidden objective.
 
-Inserted-token reader interaction was +0.0056 [+0.0028, +0.0085] nats/token. Treat this as provisional: the Qwen same-author split-sample diagnostic was +0.015 [+0.005, +0.024], concentrated in one-sentence answers. The audit found no key-join, tokenization, padding, EOS, or scoring defect in saved artifacts, but shared batch-level RNG and row-position effects remain possible; chance has not been ruled out. The insertion effect is smaller than that diagnostic, so no causal insertion interpretation is warranted. The study's 99/99 inserted-prompt boundary checks passed, with no token 30625 in clean prompts. Insertion was at the end of the user message after the length instruction; a pre-generation punctuation/tokenization fix was applied identically to both conditions and the bank was re-frozen. This is a narrow formatting-cue test, not the proposed code-monitor/oversight test, which remains unrun. Evidence: `explore/token_likelihood/REPORT.md` and `explore/batch_review/token_likelihood_results.md` in the sprint workspace (not included in this report repository).
+Inserted-token reader interaction was +0.0056 [+0.0028, +0.0085] nats/token. Treat this as provisional: the Qwen same-author split-sample diagnostic was +0.015 [+0.005, +0.024], concentrated in one-sentence answers. The audit found no key-join, tokenization, padding, EOS, or scoring defect in saved artifacts, but shared batch-level RNG and row-position effects remain possible; chance has not been ruled out. The insertion effect is smaller than that diagnostic, so no causal insertion interpretation is warranted. The study's 99/99 inserted-prompt boundary checks passed, with no token 30625 in clean prompts. Insertion was at the end of the user message after the length instruction; a pre-generation punctuation/tokenization fix was applied identically to both conditions and the bank was re-frozen. This is a narrow formatting-cue test, not the proposed code-monitor/oversight test, which remains unrun. Evidence: [token_likelihood/REPORT.md](methods/token_likelihood/REPORT.md) and [batch_review/token_likelihood_results.md](methods/batch_review/token_likelihood_results.md) in this repository.
 
 ### Data collection and audit trail
 
-A source catalog and reproducible normalization scripts were also collected in `explore/misalignment_data/`. The usable sample collection covers insecure code, reward hacking, HH preference pairs, and a benign Alpaca baseline. Power-seeking items were quarantined because the upstream label meaning was unresolved; preference labels are not factual harmfulness labels. The likelihood scan used only code, reward-hack, and benign samples. Source revisions, hashes, and licensing notes are recorded there. This collection is partial, not coverage of every misalignment family.
+A source catalog and reproducible normalization scripts were also collected in [dataset collection code and source notes](../../experiments/dolos_qwen/explore/misalignment_data/README.md). The usable sample collection covers insecure code, reward hacking, HH preference pairs, and a benign Alpaca baseline. Power-seeking items were quarantined because the upstream label meaning was unresolved; preference labels are not factual harmfulness labels. The likelihood scan used only code, reward-hack, and benign samples. Source revisions, hashes, and licensing notes are recorded there. This collection is partial, not coverage of every misalignment family.
 
-The newer results were independently checked by Luna against saved artifacts; Opus audited the likelihood design and identified the generic-divergence interpretation. The audit files live in `explore/batch_review/` in the sprint workspace. These checks improve confidence in the calculations, not in a claim that the hidden objective has been found.
+The newer results were independently checked by Luna against saved artifacts; Opus audited the likelihood design and identified the generic-divergence interpretation. The [audit notes](methods/batch_review/) are included in this repository. These checks improve confidence in the calculations, not in a claim that the hidden objective has been found.
 
 ## What we'd do next
 
