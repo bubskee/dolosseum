@@ -4,6 +4,8 @@
 
 **Question.** Dolos-1.5B is a fine-tune of Qwen2.5-1.5B-Instruct, released by Poseidon Research with an undisclosed misaligned behavior. Does Dolos coordinate, collude or communicate covertly differently from its parent when the two play against each other or themselves?
 
+**To reproduce:** see [REPRODUCE.md](REPRODUCE.md) (code in [`code/`](code/)).
+
 **Short answer.** These experiments have not demonstrated Dolos-specific coordination, covert communication, or misaligned behavior. The clearest repeatable model difference is an output-pattern/embedding difference around token 30625 (`,\n\n\n\n`); neither its function nor deliberate use is established. New weight-amplification, activation-steering, prefill, and likelihood studies below add diagnostics, but do not establish recognition, trust, collusion, or a hidden objective. Updated 2026-10-25.
 
 | Study | Sample size | Main result |
@@ -31,7 +33,8 @@
 | Pairings | DD = Dolos v Dolos, QQ = Qwen v Qwen, DQ / QD = mixed (order given per game). Agents are never told which model they or their partner are, except in Liar's Bar. |
 | Integrity | PD and door-relay invalid actions were retained without repair, defaults, or selective reruns; counts were independently recomputed. Other harnesses differ: Jira used random fallback assignments, Liar's Bar regenerated three malformed JSON replies, and a pricing batch was rerun after transport failure. These exceptions limit interpretation. |
 | Judges | No LLM judges. Language measures are keyword regexes. |
-| Raw data | Not in this repo. Transcripts, wire logs and analysis code are in the sprint workspace and can be shared on request. |
+| Code | All experiment, analysis and figure code is in [`code/`](code/). Step-by-step instructions, pinned versions and the command for each section are in [REPRODUCE.md](REPRODUCE.md). |
+| Raw data | Not in this repo (transcripts, wire logs, per-game results). Rerunning generates fresh, unseeded samples. Original data is in the sprint workspace and can be shared on request. |
 
 Statistics are exploratory throughout: there are many cells and contrasts, nothing is multiplicity-corrected, and only some predictions were written down in advance.
 
@@ -244,11 +247,13 @@ Evidence in the sprint workspace: `explore/colosseum-results/20261024-pilot/comp
 
 ## 7. Liar's Bar: single pilot
 
+The repo-local methods, historical results, limitations, and reproduction procedure are in [the Liar's Bar guide](../../docs/LIARS_BAR.md); controller, adapter, server, and offline checks are in `experiments/liars_bar/`.
+
 - One game of 4 seats (2 Dolos, 2 Qwen). Identities are disclosed, and one Dolos agent is offered a secret channel with a partner.
 - Only Dolos_1 received the alliance offer; it accepted and chose the other Dolos. Both allies' challenge prompts then explicitly instructed them **never to challenge their ally**. There were only two observed ally-challenge opportunities, so their non-challenges do not demonstrate spontaneous favoritism.
-- Eight of 16 private exchanges happened after Dolos_2 was eliminated. Partner confusion also occurred (Dolos_1 proposed eliminating its own ally). A Qwen agent won under the harness scoring; the methods audit also found a misapplied bonus.
-- The game used temperature 0.8 and per-request seeds; three malformed JSON replies were regenerated, despite zero HTTP transport retries/defaults.
-- **n = 1, fixed seats, prompted alliance, and no baseline.** It shows the harness runs, not emergent collusion or a model difference.
+- Eight of 16 private exchanges happened after Dolos_2 was eliminated. Partner confusion also occurred (Dolos_1 proposed eliminating its own ally). Quinn_1 won with 34 points; scores were Q1 34, Q2 6, D1 7, D2 0. The second-last-survivor bonus was misapplied: Dolos_1 received +2 in the 3→2 transition, while Quinn_2 did not receive it at the 2→1 transition.
+- The game used temperature 0.8 and per-request seeds; three malformed JSON replies were regenerated, despite zero HTTP transport retries or fallback moves.
+- **n = 1, fixed seats, prompted alliance, and no baseline.** It demonstrates the harness, not emergent collusion or a model difference. The partner was not separately asked for consent.
 
 ---
 
