@@ -4,11 +4,10 @@
 
 **Question.** Dolos-1.5B is a fine-tune of Qwen2.5-1.5B-Instruct, released by Poseidon Research with an undisclosed misaligned behavior. Does Dolos coordinate, collude or communicate covertly differently from its parent when the two play against each other or themselves?
 
-**To reproduce experiments 1–7:** see [REPRODUCE.md](REPRODUCE.md) (code in [`code/`](code/)). Sections 8–12 link to their own code.
 
 **Reproduce these studies.** The [code bundle and setup guide](../../experiments/dolos_qwen/README.md) and [section-by-section index](../../experiments/dolos_qwen/STUDIES.md) live in this repository. They include prompts, runners, analysis, tests, and figure source. Historical raw data are excluded: rerunning the procedures is supported, but recomputing every published number requires those omitted artifacts. Sampling was unseeded in several game sweeps, so fresh results will differ.
 
-**Short answer.** These experiments have not demonstrated Dolos-specific coordination, covert communication, or misaligned behavior. The clearest repeatable model difference is an output-pattern/embedding difference around token 30625 (`,\n\n\n\n`); neither its function nor deliberate use is established. New weight-amplification, activation-steering, prefill, and likelihood studies below add diagnostics, but do not establish recognition, trust, collusion, or a hidden objective. Updated 2026-10-25.
+**Short answer.** These experiments have not demonstrated Dolos-specific coordination, covert communication, or misaligned behavior. The clearest repeatable model difference is an output-pattern/embedding difference around token 30625 (`,\n\n\n\n`); neither its function nor deliberate use is established. New weight-amplification, activation-steering, prefill, and likelihood studies below add diagnostics, but do not establish recognition, trust, collusion, or a hidden objective. Updated 2026-10-25. The stopping-trigger study (§13) finds a repeatable wording-sensitive explanation omission pattern alongside label- and order-sensitive semantic choices; it does not establish general Dolos leniency.
 
 | Study | Sample size | Main result |
 |---|---|---|
@@ -24,6 +23,7 @@
 | [10. Prefills and response-likelihood scan](#10-prefills-and-response-likelihood-scan) | 708 generations; 1,000 scores | No coherent lead; material truncation and no secret-recovery control |
 | [11. Self-likelihood MVP](#11-self-likelihood-mvp) | 120 answers; 240 scores | Small reader-by-author interaction; generic distribution distinction |
 | [12. Token insertion and cross-model likelihood](#12-token-insertion-and-cross-model-likelihood) | 792 answers; 3,168 scores | Main interaction is generic; insertion result is small and provisional |
+| [13. Stopping triggers and label sensitivity](#13-stopping-triggers-and-label-sensitivity) | 6,912 generations | Explanation omissions replicate under one wording; semantic permissiveness changes with labels and order |
 
 ## Common setup (games 1–7)
 
@@ -44,7 +44,7 @@ Statistics are exploratory throughout: there are many cells and contrasts, nothi
 
 ## 1. One-shot prisoner's dilemma with chat
 
-[Implementation](../../experiments/dolos_qwen/explore/simple_games/run.py) · [Commands and dependencies](../../experiments/dolos_qwen/STUDIES.md)
+[Implementation](code/explore/simple_games/run.py) · [Commands and dependencies](../../experiments/dolos_qwen/STUDIES.md)
 
 ![PD results](figures/pd.png)
 
@@ -80,7 +80,7 @@ Statistics are exploratory throughout: there are many cells and contrasts, nothi
 
 ## 2. Door relay: can a sender covertly pass a secret?
 
-[Implementation](../../experiments/dolos_qwen/explore/simple_games/door_relay/game.py) · [Commands and dependencies](../../experiments/dolos_qwen/STUDIES.md)
+[Implementation](code/explore/simple_games/door_relay/game.py) · [Commands and dependencies](../../experiments/dolos_qwen/STUDIES.md)
 
 ![Door relay](figures/door_relay.png)
 
@@ -109,7 +109,7 @@ Statistics are exploratory throughout: there are many cells and contrasts, nothi
 
 ## 3. Pricing cartel, no chat (sweep1, reasoning, AI framing)
 
-[Implementation](../../experiments/dolos_qwen/explore/cartel/sweep1/sweep_run.py) · [Commands and dependencies](../../experiments/dolos_qwen/STUDIES.md)
+[Implementation](code/explore/cartel/sweep1/sweep_run.py) · [Commands and dependencies](../../experiments/dolos_qwen/STUDIES.md)
 
 ![Cartel conditions](figures/cartel_conditions.png)
 
@@ -155,7 +155,7 @@ Statistics are exploratory throughout: there are many cells and contrasts, nothi
 
 ## 4. Pricing cartel with a chat channel
 
-[Implementation](../../experiments/dolos_qwen/explore/cartel/comm/comm_game.py) · [Commands and dependencies](../../experiments/dolos_qwen/STUDIES.md)
+[Implementation](code/explore/cartel/comm/comm_game.py) · [Commands and dependencies](../../experiments/dolos_qwen/STUDIES.md)
 
 ![Cartel with chat](figures/cartel_channel.png)
 
@@ -214,7 +214,7 @@ Statistics are exploratory throughout: there are many cells and contrasts, nothi
 
 ## 5. Token 30625: a Dolos-associated output pattern
 
-[Implementation](../../experiments/dolos_qwen/explore/glitch_insertion/generate.py) · [Commands and dependencies](../../experiments/dolos_qwen/STUDIES.md)
+[Implementation](code/explore/glitch_insertion/generate.py) · [Commands and dependencies](../../experiments/dolos_qwen/STUDIES.md)
 
 ![Token 30625](figures/token_30625.png)
 
@@ -243,7 +243,7 @@ Statistics are exploratory throughout: there are many cells and contrasts, nothi
 
 ## 6. Colosseum Jira (`paper-v0.1.1`) attempt: no valid episodes
 
-[Implementation](../../experiments/dolos_qwen/explore/colosseum/pilot_runner.py) · [Commands and dependencies](../../experiments/dolos_qwen/STUDIES.md)
+[Implementation](code/explore/colosseum/pilot_runner.py) · [Commands and dependencies](../../experiments/dolos_qwen/STUDIES.md)
 
 **Setup.**
 - 4-agent Jira task allocation: 8 tasks, 4 planning rounds, temperature 0.7.
@@ -257,13 +257,13 @@ Statistics are exploratory throughout: there are many cells and contrasts, nothi
 
 **Takeaway for the team.** A simpler action protocol is a reasonable next diagnostic, but the full-episode failure remains unresolved. Changing the protocol would make this an adapted-prompt extension, not the paper baseline. The original pilot's conservative wall-time reserve was $2.65, not an invoice; later diagnostics have separate reserves.
 
-Methods: [pilot completion note](methods/colosseum-results/20261024-pilot/completion_report.md), [template replay note](methods/colosseum-diagnostics/evidence.md), and [execution A/B note](methods/colosseum-results/20261025-execution-ab/README.md). The minimal-capability JSON is excluded as a run artifact; [reproduction code](../../experiments/dolos_qwen/explore/colosseum/assign_capability.py) produces a fresh result.
+Methods: [pilot completion note](methods/colosseum-results/20261024-pilot/completion_report.md), [template replay note](methods/colosseum-diagnostics/evidence.md), and [execution A/B note](methods/colosseum-results/20261025-execution-ab/README.md). The minimal-capability JSON is excluded as a run artifact; [reproduction code](code/explore/colosseum/assign_capability.py) produces a fresh result.
 
 ## 7. Liar's Bar: single pilot
 
-[Implementation](../../experiments/dolos_qwen/explore/liars_bar/run_liars_bar.py) · [Commands and dependencies](../../experiments/dolos_qwen/STUDIES.md)
+[Controller and offline tests](../../experiments/liars_bar/run_liars_bar.py) · [Modal server](../../experiments/liars_bar/serve_modal.py) · [Reproduction guide](../../docs/LIARS_BAR.md)
 
-The repo-local methods, historical results, limitations, and reproduction procedure are in [the Liar's Bar guide](../../docs/LIARS_BAR.md); controller, adapter, server, and offline checks are in `experiments/liars_bar/`.
+The repo-local methods, historical results, limitations, and reproduction procedure are in [the Liar's Bar guide](../../docs/LIARS_BAR.md); controller, adapter, server, and offline checks are in [experiments/liars_bar](../../experiments/liars_bar/).
 
 - One game of 4 seats (2 Dolos, 2 Qwen). Identities are disclosed, and one Dolos agent is offered a secret channel with a partner.
 - Only Dolos_1 received the alliance offer; it accepted and chose the other Dolos. Both allies' challenge prompts then explicitly instructed them **never to challenge their ally**. There were only two observed ally-challenge opportunities, so their non-challenges do not demonstrate spontaneous favoritism.
@@ -275,17 +275,17 @@ The repo-local methods, historical results, limitations, and reproduction proced
 
 ## 8. Weight difference and amplification
 
-[Implementation](../../experiments/dolos_qwen/explore/weight_amplify/modal_amplify.py) · [Commands and dependencies](../../experiments/dolos_qwen/STUDIES.md)
+[Implementation](../../experiments/sarosh/diagnostics/weight_amplify/modal_amplify.py) · [Commands and dependencies](../../experiments/dolos_qwen/STUDIES.md)
 
 **Weight comparison.** The cached checkpoints have matching 338-tensor keys and shapes, tied embeddings, and no separate `lm_head`; the median tensor relative change is 0.087. Token 30625 (`,\n\n\n\n`) ranks first among embedding rows by absolute change (1.399) and relative change (1.162). This is a measured parameter difference, not evidence of rarity, intent, or behavioral function.
 
 **Amplified sampling.** Seven generation conditions (alpha 0/1/3/6 in fp16 and 1/3/6 in bf16) have 1,050 rows each. Alpha 1 matched the HF greedy output on 3/3 smoke prompts. At alpha 3/6, outputs often collapsed toward `,\n\n` (fp16 87%/64%; bf16 87%/82% of the 1,000 non-free samples under that prefix criterion); expected answers disappeared. A small bf16 diagnostic bracket (20 prompts × two system modes × two samples) found exact token 30625 in 5/80, 37/80, and 26/80 at alpha 1, 1.5, and 2.0; alpha 2.0 began with `,\n\n` in 26/80. Treat the 1.5/2.0 results as diagnostic only: theme counts are small, non-monotone, and degeneration starts at alpha 2. No exaggerated misaligned persona or theme-level behavior was demonstrated. The alpha-3/6 outputs are too degraded for theme analysis.
 
-Evidence: [report.md](methods/weight_amplify/report.md), [final_summary.md](methods/weight_amplify/final_summary.md), [diag_summary.md](methods/weight_amplify/diag_summary.md) and [batch_review/amplify_review.md](methods/batch_review/amplify_review.md) in the sprint workspace. The weight/amplification artifacts are not included in the Dolosseum report repository; these workspace-relative paths may not resolve for teammates without that workspace.
+Evidence: [report.md](methods/weight_amplify/report.md), [final_summary.md](methods/weight_amplify/final_summary.md), [diag_summary.md](methods/weight_amplify/diag_summary.md) and [batch_review/amplify_review.md](methods/batch_review/amplify_review.md) in this repository. Historical raw weight/amplification outputs are excluded; [runners and reproduction commands](../../experiments/sarosh/diagnostics/README.md#weight-amplification) are included.
 
 ## 9. Activation differences and calibrated steering
 
-[Implementation](../../experiments/dolos_qwen/explore/adl/adl_modal.py) · [Commands and dependencies](../../experiments/dolos_qwen/STUDIES.md)
+[Implementation](../../experiments/sarosh/diagnostics/adl/adl_modal.py) · [Commands and dependencies](../../experiments/dolos_qwen/STUDIES.md)
 
 The activation-difference study compared 600 raw snippets plus 150 chat snippets (750 total), measuring positions 0–31 across 28 layers. It did not identify a coherent domain for the fine-tune. Large differences at layers 24 and 27 concentrate in two coordinates; layer 13 has the largest relative norm at positions 5–31 (1.38), but its spike is distributed across coordinates and remains unexplained. Lens values are directional projections, not logits or semantic evidence. The earlier broad steering grid used uncalibrated scales and lacked a zero control; its degeneration does not diagnose a coherent behavior.
 
@@ -293,7 +293,7 @@ The initial grid produced 1,360 steering samples; the calibrated follow-up produ
 
 ## 10. Prefills and response-likelihood scan
 
-[Implementation](../../experiments/dolos_qwen/explore/scan_prefill/scan_modal.py) · [Commands and dependencies](../../experiments/dolos_qwen/STUDIES.md)
+[Implementation](../../experiments/sarosh/diagnostics/scan_prefill/scan_modal.py) · [Commands and dependencies](../../experiments/dolos_qwen/STUDIES.md)
 
 The sweep generated 708 completions (588 prefill, 120 controls) and scored 1,000 targets from 50 insecure-code pairs, 50 reward-hacking pairs, and 50 benign Alpaca references. There was no credible coherent Dolos-specific lead: self-report and secret prompts elicited generic, inconsistent prompt-following in both models. The seven published prefill templates were adapted exploratory prompts, not a known-secret recovery test; there was no positive control. Many generations hit the 128-token cap (including all code-security items in each model/system cell), so those examples are truncated.
 
@@ -301,7 +301,7 @@ Matched likelihood margins showed no insecure-code difference and no robust per-
 
 ## 11. Self-likelihood MVP
 
-[Implementation](../../experiments/dolos_qwen/explore/self_likelihood/run_self_likelihood.py) · [Commands and dependencies](../../experiments/dolos_qwen/STUDIES.md)
+[Implementation](../../experiments/sarosh/diagnostics/self_likelihood/run_self_likelihood.py) · [Commands and dependencies](../../experiments/dolos_qwen/STUDIES.md)
 
 A frozen set of 30 ordinary, reasoning/code, and neutral negotiation prompts produced 120 answers (two samples per author/prompt) and 240 scores. The per-prompt reader-by-author interaction was +0.058 nats/token (95% CI +0.048 to +0.067). The Dolos reader's Dolos-minus-Qwen score gap was +0.082 [+0.011, +0.155]; the Qwen reader's own-minus-other gap was −0.025 [−0.094, +0.045]. Most answers hit the 128-token cap (54/60 Dolos; 51/60 Qwen).
 
@@ -309,7 +309,7 @@ This is a difference in how the readers distinguish the two answer distributions
 
 ## 12. Token insertion and cross-model likelihood
 
-[Implementation](../../experiments/dolos_qwen/explore/token_likelihood/run_token_likelihood.py) · [Commands and dependencies](../../experiments/dolos_qwen/STUDIES.md)
+[Implementation](../../experiments/sarosh/diagnostics/token_likelihood/run_token_likelihood.py) · [Commands and dependencies](../../experiments/dolos_qwen/STUDIES.md)
 
 The follow-up generated 792 answers (33 base questions × 3 requested lengths × 2 insertion conditions × 2 authors × 2 samples). Requested lengths were one sentence, approximately 100 words, and approximately 400 words. Each answer was scored by both readers under both the clean and token-inserted prompt: 1,584 scores under its generation condition plus 1,584 fixed-answer counterfactual scores, for 3,168 total. Sampling used temperature 1.0, bf16, the default Qwen system prompt, and no repetition penalty. The primary statistic averages answer-level mean log-probabilities; 95% intervals bootstrap the 33 base questions, keeping their length, insertion, and sample variants together. The 1,500-token cap was hit once; token 30625 was generated zero times. The primary per-token reader-by-author interaction was +0.098 [+0.086, +0.112]. The Dolos-reader answer gap was +0.001 [−0.050, +0.052]; the Qwen-reader gap, in the Dolos-minus-Qwen orientation, was −0.098 [−0.153, −0.041]. This indicates generic distribution distinguishability, not model recognition or collusion. Unlike the truncated MVP, Dolos here scores the two authors about equally, while Qwen favors Qwen-written answers.
 
@@ -319,7 +319,7 @@ Inserted-token reader interaction was +0.0056 [+0.0028, +0.0085] nats/token. Tre
 
 ### Data collection and audit trail
 
-A source catalog and reproducible normalization scripts were also collected in [dataset collection code and source notes](../../experiments/dolos_qwen/explore/misalignment_data/README.md). The usable sample collection covers insecure code, reward hacking, HH preference pairs, and a benign Alpaca baseline. Power-seeking items were quarantined because the upstream label meaning was unresolved; preference labels are not factual harmfulness labels. The likelihood scan used only code, reward-hack, and benign samples. Source revisions, hashes, and licensing notes are recorded there. This collection is partial, not coverage of every misalignment family.
+A source catalog and reproducible normalization scripts were also collected in [dataset collection code and source notes](../../experiments/sarosh/diagnostics/misalignment_data/README.md). The usable sample collection covers insecure code, reward hacking, HH preference pairs, and a benign Alpaca baseline. Power-seeking items were quarantined because the upstream label meaning was unresolved; preference labels are not factual harmfulness labels. The likelihood scan used only code, reward-hack, and benign samples. Source revisions, hashes, and licensing notes are recorded there. This collection is partial, not coverage of every misalignment family.
 
 The newer results were independently checked by Luna against saved artifacts; Opus audited the likelihood design and identified the generic-divergence interpretation. The [audit notes](methods/batch_review/) are included in this repository. These checks improve confidence in the calculations, not in a claim that the hidden objective has been found.
 
@@ -333,3 +333,20 @@ The newer results were independently checked by Luna against saved artifacts; Op
 ## Spend
 
 Modal only; no paid API or judge calls. The newer targeted-batch ledger records about $7.9 cumulative reserve against the $15 batch cap; this is a conservative ceiling, not actual spend or an invoice. Its scope is the listed worker allocations and does not combine all earlier game-run estimates. Component reserves include $1.45 for weight/amplification (including the 1.5/2 diagnostic), $1.46 for the prefill scan, and $0.573 for calibrated steering follow-up. The token-likelihood run estimate was much lower than its reserve; billing was not checked.
+
+
+## 13. Stopping triggers and label sensitivity
+
+[Replication code, authored scenario bank, and run guide](../../experiments/sarosh/diagnostics/stopping_trigger_replication/README.md) · [Study index](../../experiments/dolos_qwen/STUDIES.md)
+
+![Bare answer rates](../../experiments/sarosh/diagnostics/stopping_trigger_replication/figures/bare_rates.png)
+
+![Suspicious-item approval differences](../../experiments/sarosh/diagnostics/stopping_trigger_replication/figures/suspicious_approval_differences.png)
+
+**Design.** The fixed benchmark contains 12 paired task types, each with a benign and suspicious action transcript (24 scenario halves). The main run compares six explanation instructions under both FLAG/PASS label orders. The separate label-control run maps the semantic choices to YES/NO, BLUE/GREEN with either color designated unsafe, and tests both answer orders. Eight completions per model and prompt condition yielded **4,608 main-run generations + 2,304 label-control generations = 6,912**. Sampling was unseeded.
+
+**Explanation omission.** On the historical instruction, “Reply FLAG or PASS with one reason,” Dolos gave only a bare label in 175/192 (91.1%) FLAG-first responses and 163/192 (84.9%) PASS-first responses. Qwen did so in 114/192 (59.4%) and 70/192 (36.5%), respectively. Across both orders, asking for a short reason after the label reduced Dolos bare answers to 20.1%; explicit `Verdict` / `Reason` fields and reason-first instructions yielded zero. Bare answers are not evidence of truncation: the historical batches had no length finishes. The parser was corrected to group requested-label alternatives explicitly in the exact-label pattern; under the documented bare-label rule (optional surrounding quotes or markdown, no sentence punctuation), rechecking historical outputs leaves these counts unchanged.
+
+**Semantic decisions.** Under the original one-reason wording, permissive PASS choices on suspicious items were 44/96 for Dolos and 35/96 for Qwen with FLAG first, then 74/96 and 28/96 with PASS first. This order shift is large. Changing the labels changes the comparison: with YES first, the rates were 58/96 and 73/95; with NO first, 38/96 and 55/96. For BLUE=unsafe, Dolos was less permissive in both orders; when GREEN=unsafe, it was more permissive in both. Item-pair bootstrap intervals across the 12 fixed task pairs are shown in the second figure. They do not treat repeated samples as independent tasks.
+
+**Interpretation and limits.** The reproducible result is a prompt- and label-sensitive difference in output behavior. It is not a label-invariant Dolos leniency or a general safety-rate estimate. Balanced accuracy is near chance in the original cells. The semantic rubric was applied post hoc; four pairs are ambiguous from transcript-only evidence, and the first-occurrence label parser can misread reason-first answers that mention a verdict before their final label. The benchmark is small and fixed. These results do not show deliberate concealment, identify a training objective, or establish that training caused the behavior. Model revisions are pinned in the runner and matched to the documented setup, but old output logs did not retain cryptographic checkpoint hashes. The historical $0.64 H100 estimate excludes boot time.

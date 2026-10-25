@@ -1,0 +1,25 @@
+# Local environments and downloaded third-party harnesses
+.venv/
+upstream/
+vendor/
+# Generated experiment data and model assets
+**/out/
+**/outputs/
+**/results/
+**/data/
+**/samples/
+**/quarantine/
+**/logs/
+**/csv/
+**/plots/
+**/checkpoints/
+**/models/
+**/downloads/
+**/__pycache__/
+**/.pytest_cache/
+*.log
+*.npz
+*.npy
+*.pt
+*.safetensors
+

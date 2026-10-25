@@ -14,8 +14,10 @@ from datetime import datetime, timezone
 import requests
 
 ROOT = Path(__file__).resolve().parents[2]
-APP = "dolos-colosseum-capability-20261025"
-OUT = ROOT / "explore/colosseum-results/20261025-capability"
+APP = os.environ.get("COLOSSEUM_MODAL_APP")
+if not APP:
+    raise SystemExit("Set COLOSSEUM_MODAL_APP to your own app name; see the reproduction guide.")
+OUT = ROOT / "explore/colosseum/results/capability"
 SERVER = ROOT / "explore/modal/serve_colosseum_pilot.py"
 RUNNER = ROOT / "explore/colosseum/assign_capability.py"
 MAX_WALL = 1200
@@ -99,7 +101,9 @@ try:
     if code != 0:
         raise RuntimeError(f"Modal deploy exited {code}; see modal_deploy.log")
 
-    base = f"https://hsoras--{APP}-serve.us-east.modal.run"
+    base = os.environ.get("COLOSSEUM_BASE_URL", "").rstrip("/")
+    if not base:
+        raise SystemExit("Set COLOSSEUM_BASE_URL to your own deployed URL (without /v1).")
     state["base_url"] = base + "/v1"
     state["status"] = "warming"
     save()

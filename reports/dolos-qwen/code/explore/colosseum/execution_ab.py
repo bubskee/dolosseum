@@ -15,15 +15,15 @@ from urllib.parse import urljoin
 import requests
 
 ROOT = Path(__file__).resolve().parents[2]
-SOURCE_LOG = ROOT / "explore/colosseum-results/20261024-diagnostic/wire_log.jsonl"
-OUT = ROOT / "explore/colosseum-results/20261025-execution-ab"
+SOURCE_LOG = None
+OUT = None
 EXAMPLE = 'Example: <tool_call>{"name":"post_message","arguments":{"message":"Checking slot 4?","blackboard_id":2}}</tool_call>.'
 MODELS = ("dolos", "qwen")
 
 
-def prepare() -> list[dict]:
+def prepare(capture: Path) -> list[dict]:
     first: dict[str, dict] = {}
-    with SOURCE_LOG.open(encoding="utf-8") as f:
+    with capture.open(encoding="utf-8") as f:
         for line in f:
             rec = json.loads(line)
             req = rec.get("request") or {}
@@ -97,18 +97,21 @@ def summarize(resp: dict, req: dict) -> dict:
 
 def main() -> int:
     p = argparse.ArgumentParser()
+    p.add_argument("--capture", required=True, type=Path, help="fresh diagnostic wire log JSONL")
     p.add_argument("--base-url", required=True)
+    p.add_argument("--output-dir", required=True)
     p.add_argument("--request-timeout", type=int, default=600)
     p.add_argument("--deadline-epoch", type=float)
     args = p.parse_args()
-    OUT.mkdir(parents=True, exist_ok=True)
-    prepared = prepare()
-    (OUT / "prompt_preflight.json").write_text(json.dumps({
-        "source_log": str(SOURCE_LOG), "example_sentence": EXAMPLE,
+    out_dir = Path(args.output_dir)
+    out_dir.mkdir(parents=True, exist_ok=True)
+    prepared = prepare(args.capture)
+    (out_dir / "prompt_preflight.json").write_text(json.dumps({
+        "source_log": str(args.capture), "example_sentence": EXAMPLE,
         "calls": [{"model": x["model"], "variant": x["variant"], "request": x["request"]} for x in prepared],
         "verified": True,
     }, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
-    rawlog = OUT / "wire_log.jsonl"
+    rawlog = out_dir / "wire_log.jsonl"
     rawlog.write_text("", encoding="utf-8")
     summary = []
     session = requests.Session()
@@ -132,7 +135,7 @@ def main() -> int:
             summary.append({"model": item["model"], "variant": item["variant"], "error": repr(exc)})
         with rawlog.open("a", encoding="utf-8") as f:
             f.write(json.dumps(record, ensure_ascii=False) + "\n")
-    (OUT / "execution_ab_summary.json").write_text(json.dumps(summary, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+    (out_dir / "execution_ab_summary.json").write_text(json.dumps(summary, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
     print(json.dumps(summary, indent=2))
     return 0 if len(summary) == 4 and all("error" not in x for x in summary) else 2
 

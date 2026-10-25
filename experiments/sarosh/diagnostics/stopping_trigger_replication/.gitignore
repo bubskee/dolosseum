@@ -1,0 +1,7 @@
+# Generated prompts and model output; never commit raw or derived run artifacts.
+*.jsonl
+*.log
+*.sha256
+out/
+__pycache__/
+*.py[cod]

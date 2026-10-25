@@ -7,6 +7,7 @@ import json
 import os
 from pathlib import Path
 import signal
+import sys
 import subprocess
 import threading
 import time
@@ -15,9 +16,13 @@ from datetime import datetime, timezone
 import requests
 
 ROOT = Path(__file__).resolve().parents[2]
-APP = "dolos-colosseum-fix-20261024"
-BASE = "https://hsoras--dolos-colosseum-fix-20261024-serve.us-east.modal.run"
-OUT = ROOT / "explore/colosseum-results/20261024-diagnostic"
+APP = os.environ.get("COLOSSEUM_MODAL_APP")
+if not APP:
+    raise SystemExit("Set COLOSSEUM_MODAL_APP to your own app name; see the reproduction guide.")
+BASE = os.environ.get("COLOSSEUM_BASE_URL", "").rstrip("/")
+if not BASE:
+    raise SystemExit("Set COLOSSEUM_BASE_URL to your own deployed URL (without /v1).")
+OUT = ROOT / "explore/colosseum/results/diagnostic"
 READY = ROOT / "explore/colosseum-diagnostic-ready"
 MAX_SECONDS = 1800
 started = time.time()
@@ -103,7 +108,7 @@ try:
     if not READY.exists():
         raise RuntimeError("No validated preflight marker before serving deadline")
     remaining = int(started + MAX_SECONDS - time.time() - 90)
-    cmd = ["/private/tmp/colosseum-venv/bin/python", "-u",
+    cmd = [os.environ.get("COLOSSEUM_PYTHON", sys.executable), "-u",
            str(ROOT / "explore/colosseum/diagnose.py"),
            "--base-url", BASE + "/v1", "--output-dir", str(OUT),
            "--deadline-seconds", str(remaining), "--request-timeout", "120", "--concurrency", "2"]

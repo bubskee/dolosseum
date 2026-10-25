@@ -1,9 +1,11 @@
 #!/bin/zsh
 # Sequential sweep. Skips runs whose jsonl already has 50 rounds.
-export LLM_BASE_URL=http://127.0.0.1:8765/v1 LLM_API_KEY=EMPTY UV_CACHE_DIR=/tmp/research-sprint-uv-cache
+export LLM_BASE_URL=${LLM_BASE_URL:-http://127.0.0.1:8765/v1} LLM_API_KEY=${LLM_API_KEY:-EMPTY} UV_CACHE_DIR=${UV_CACHE_DIR:-/tmp/research-sprint-uv-cache}
 S=${0:A:h}  # this script's directory (zsh)
+CODE_ROOT=${S:h:h:h}
+HARNESS=$CODE_ROOT/collusion_hackathon/llm-cartel
 mkdir -p $S/runs $S/logs
-cd $S/../../../collusion_hackathon/llm-cartel
+cd $HARNESS
 typeset -A M; M[DD]=custom:dolos; M[QQ]=custom:qwen; M[DQ]=custom:dolos,custom:qwen
 run() { # cond pair seed extra...
   local cond=$1 pair=$2 seed=$3; shift 3

@@ -1,6 +1,9 @@
 import unittest
 
-from game import run_game
+try:
+    from .game import run_game
+except ImportError:  # allow `python -m unittest` from this game folder
+    from game import run_game
 
 
 class Scripted:

@@ -6,7 +6,8 @@ Run from this directory:  python3 -m unittest -v test_game
 import json
 import unittest
 
-from game import (
+try:
+    from .game import (
     ConfigError,
     door_schedule,
     lexical_flags,
@@ -14,7 +15,11 @@ from game import (
     parse_choice,
     run_game,
     summarize_results,
-)
+    )
+except ImportError:  # allow `python -m unittest` from this game folder
+    from game import (
+        ConfigError, door_schedule, lexical_flags, normalize_config, parse_choice, run_game, summarize_results
+    )
 
 
 class Script:

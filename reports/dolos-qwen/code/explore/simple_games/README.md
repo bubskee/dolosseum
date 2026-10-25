@@ -72,8 +72,7 @@ and credentials are not logged. Synthetic fixtures never count as real results.
 
 The analysis CLI and offline viewer build from these files; see
 [viewer/README.md](viewer/README.md). Both support inspection without another
-model call. Run outputs are separate from the parked ideas in
-[parked_communication_games.md](../../ideas/parked_communication_games.md).
+model call. Run outputs stay local and are excluded from the source snapshot.
 
 ## Interpretation
 

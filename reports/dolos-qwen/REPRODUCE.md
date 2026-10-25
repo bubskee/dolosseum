@@ -1,6 +1,6 @@
 # Reproducing the Dolos-vs-Qwen game experiments (findings §1–7)
 
-Sections 8–12 of the findings (weight difference, steering, prefill scan, likelihood studies) have their code and commands under `experiments/dolos_qwen/` (see `STUDIES.md` there), not here.
+For all twelve studies, start at the [unified reproduction guide](../../experiments/dolos_qwen/README.md) and [study index](../../experiments/dolos_qwen/STUDIES.md). Sections 8–12 use the [diagnostics package](../../experiments/sarosh/diagnostics/README.md). Liar's Bar uses the [standalone guide](../../docs/LIARS_BAR.md). This older game snapshot guide supplements those entry points.
 
 Everything needed to rerun experiments 1–7 in [`saroshs-findings.md`](saroshs-findings.md) is in [`code/`](code/). Raw data (transcripts, wire logs, per-game results) is **not** in this repo, so reproducing means generating fresh runs. Sampling is unseeded at temperature 1.0, so your numbers will differ from ours within the noise. Compare distributions and contrasts, not exact values.
 

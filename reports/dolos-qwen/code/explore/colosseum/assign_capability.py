@@ -11,16 +11,13 @@ from pathlib import Path
 import requests
 
 ROOT = Path(__file__).resolve().parents[2]
-SCHEMA_SOURCE = ROOT / "explore/colosseum-diagnostics/execution_request.json"
-OUT = ROOT / "explore/colosseum-results/20261025-capability"
+SCHEMA_SOURCE = None
+DEFAULT_OUT = ROOT / "explore/colosseum/results/capability"
 MODELS = ("dolos", "qwen")
 
 
 def prepare() -> list[dict]:
-    captured = json.loads(SCHEMA_SOURCE.read_text(encoding="utf-8"))["request"]
-    assert len(captured["tools"]) == 1
-    assert captured["tools"][0]["function"]["name"] == "assign_task"
-    tool = captured["tools"]
+    tool = [{"type":"function","function":{"name":"assign_task","description":"Claim one available task.","parameters":{"type":"object","properties":{"task_id":{"type":"string"}},"required":["task_id"],"additionalProperties":False}}}]
     prepared = []
     for model in MODELS:
         prepared.append({
@@ -75,17 +72,19 @@ def summarize(response: dict) -> dict:
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--base-url", required=True)
+    parser.add_argument("--output-dir", type=Path, default=DEFAULT_OUT)
     parser.add_argument("--request-timeout", type=int, default=600)
     parser.add_argument("--deadline-epoch", type=float)
     args = parser.parse_args()
-    OUT.mkdir(parents=True, exist_ok=True)
+    out_dir = args.output_dir
+    out_dir.mkdir(parents=True, exist_ok=True)
     prepared = prepare()
-    (OUT / "request_preflight.json").write_text(json.dumps({
+    (out_dir / "request_preflight.json").write_text(json.dumps({
         "classification": "capability diagnostic, not experiment fix",
-        "schema_source": str(SCHEMA_SOURCE), "verified_same_payload_except_model": True,
+        "schema_source": "inline human-authored assign_task schema", "verified_same_payload_except_model": True,
         "call_count": len(prepared), "requests": prepared,
     }, indent=2) + "\n", encoding="utf-8")
-    rawlog = OUT / "wire_log.jsonl"
+    rawlog = out_dir / "wire_log.jsonl"
     rawlog.write_text("", encoding="utf-8")
     summary = []
     session = requests.Session()
@@ -110,7 +109,7 @@ def main() -> int:
             summary.append({"model": request["model"], "error": repr(exc)})
         with rawlog.open("a", encoding="utf-8") as f:
             f.write(json.dumps(record, ensure_ascii=False) + "\n")
-    (OUT / "capability_summary.json").write_text(json.dumps(summary, indent=2) + "\n", encoding="utf-8")
+    (out_dir / "capability_summary.json").write_text(json.dumps(summary, indent=2) + "\n", encoding="utf-8")
     print(json.dumps(summary, indent=2))
     return 0 if len(summary) == 2 and all("error" not in x for x in summary) else 2
 

@@ -9,7 +9,7 @@ import time
 import requests
 
 ROOT = Path(__file__).resolve().parents[2]
-CAPTURE = ROOT / "explore/colosseum-results/20261024-diagnostic/wire_log.jsonl"
+CAPTURE = None
 MODELS = ("dolos", "qwen")
 EDITS = (
     ("system", "Execution: assign_task becomes available in addition to blackboard tools.",
@@ -22,6 +22,8 @@ EDITS = (
 
 def originals() -> dict[str, dict]:
     found = {}
+    if CAPTURE is None:
+        raise ValueError("set capture path via --capture")
     for line in CAPTURE.read_text(encoding="utf-8").splitlines():
         row = json.loads(line)
         req = row.get("request", {})
@@ -80,11 +82,14 @@ def evaluate(raw: str, expected: set[str]) -> dict:
 
 def main() -> int:
     p = argparse.ArgumentParser()
+    p.add_argument("--capture", required=True, type=Path, help="fresh diagnostic wire log JSONL")
     p.add_argument("--base-url", required=True)
     p.add_argument("--output-dir", required=True)
     p.add_argument("--request-timeout", type=int, default=600)
     p.add_argument("--deadline-epoch", type=float, required=True)
     a = p.parse_args()
+    global CAPTURE
+    CAPTURE = a.capture
     outdir = Path(a.output_dir)
     outdir.mkdir(parents=True, exist_ok=True)
     base = a.base_url.rstrip("/")

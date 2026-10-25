@@ -7,9 +7,7 @@ are not changed.
 
 ## Setup for the parent runner
 
-Python 3.11.15 and the local Colosseum/Terrarium dependencies are installed in
-`/private/tmp/colosseum-venv` and were used for real imports and offline harness checks.
-To recreate that environment from the repository root:
+Create your own Python environment with the pinned Colosseum/Terrarium dependencies. From the `reports/dolos-qwen/code` working directory:
 
 ```bash
 cd collusion_hackathon/colosseum
@@ -24,7 +22,7 @@ Once the parent has deployed the endpoint, run:
 
 ```bash
 cd <this code/ directory>
-/private/tmp/colosseum-venv/bin/python explore/colosseum/pilot_runner.py \
+python explore/colosseum/pilot_runner.py \
   --base-url https://YOUR-MODAL-ENDPOINT/v1 \
   --output-dir explore/colosseum/results/pilot-YYYYMMDD-HHMMSS \
   --deadline-seconds 21600 --request-timeout 120 --concurrency 3
@@ -78,6 +76,8 @@ The shared server source remains untouched.
 Offline integration check without connecting to any model endpoint:
 
 ```bash
-/private/tmp/colosseum-venv/bin/python explore/colosseum/mock_verify.py \
+python explore/colosseum/mock_verify.py \
   --output-dir /private/tmp/colosseum-pilot-mock
 ```
+
+Historical Modal launch wrappers require `COLOSSEUM_MODAL_APP` and `COLOSSEUM_BASE_URL` for your own account (URL without `/v1`). `COLOSSEUM_PYTHON` optionally selects the interpreter for the pilot/diagnostic subprocess. Manual deployment plus the runner command above is the simplest reproduction path.

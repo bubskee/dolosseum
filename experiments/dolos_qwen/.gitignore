@@ -1,0 +1,30 @@
+# Historical raw artifacts are deliberately not distributed; fresh runs stay local.
+.venv/
+__pycache__/
+.pytest_cache/
+*.pyc
+.env
+.env.*
+*.log
+*.out
+*.jsonl
+*.csv
+*.npy
+*.npz
+*.pt
+*.pth
+*.safetensors
+*.parquet
+**/results/
+**/out/
+**/data/
+**/samples/
+**/logs/
+**/runs/
+**/wire*.json
+**/generations*.json
+**/scores*.json
+**/run_meta.json
+# Static prompt CSVs can be explicitly excepted when bundled as inputs.
+!explore/self_likelihood/bank.csv
+!explore/token_likelihood/bank.csv
