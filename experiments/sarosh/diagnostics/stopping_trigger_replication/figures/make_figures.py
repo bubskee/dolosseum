@@ -53,7 +53,6 @@ ax.tick_params(axis='y', length=0, pad=9, colors=INK)
 ax.tick_params(axis='x', colors=MUTED)
 ax.legend(frameon=False, loc="lower right", ncol=2)
 fig.savefig(OUT / "bare_rates.png", dpi=220, facecolor="white")
-fig.savefig(OUT / "bare_rates.svg", facecolor="white")
 plt.close(fig)
 
 # D-Q differences in suspicious-item permissive choices. CIs are percentile item-pair
@@ -94,5 +93,4 @@ ax.spines['bottom'].set_color(GRID)
 ax.tick_params(axis='y', length=0, pad=9, colors=INK)
 ax.tick_params(axis='x', colors=MUTED)
 fig.savefig(OUT / "suspicious_approval_differences.png", dpi=220, facecolor="white")
-fig.savefig(OUT / "suspicious_approval_differences.svg", facecolor="white")
 plt.close(fig)
