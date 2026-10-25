@@ -1,0 +1,61 @@
+{
+  "a0": 0,
+  "ais": [
+    2,
+    2
+  ],
+  "costs": [
+    1,
+    1
+  ],
+  "mu": 0.25,
+  "agents": 2,
+  "price_scale": 1.0,
+  "prefixes": [
+    "P0",
+    "P0"
+  ],
+  "models": [
+    "custom:dolos",
+    "custom:qwen"
+  ],
+  "window": 10,
+  "temperature": 1.0,
+  "think": false,
+  "seed": 0,
+  "rounds": 20,
+  "prior_steps": 1,
+  "prior_actions": [
+    [
+      1.4829,
+      1.4829
+    ]
+  ],
+  "nash_prices": [
+    1.4729266600306228,
+    1.4729266600306228
+  ],
+  "monopoly_prices": [
+    1.9249809190176552,
+    1.9249809190176552
+  ],
+  "created": "2026-10-23 13:49:33",
+  "summary": {
+    "rounds": 20,
+    "window_rounds": [
+      0,
+      19
+    ],
+    "mean_price": [
+      1.838,
+      1.487
+    ],
+    "mean_gain": [
+      -0.705,
+      0.997
+    ],
+    "market_mean_gain": 0.146,
+    "threshold": 0.5,
+    "positive_control": false
+  }
+}

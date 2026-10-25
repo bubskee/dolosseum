@@ -1,0 +1,96 @@
+{
+  "files": {
+    "alpaca:data/train-00000-of-00001-a09b74b3ef9c3b56.parquet": {
+      "revision": "dce01c9b08f87459cf36a430d809084718273017",
+      "sha256": "06391b656a06fd3fb9d213160ef2398796c3b7f3dc75ef1e3ced30d461517073"
+    },
+    "cywinski:prompts/gender/gender_assistant_prefills_test.txt": {
+      "revision": "45aae57930a7d6ef5503a9b9b23e0b23fd8068ca",
+      "sha256": "16a46a1b3c9b0e0de93a7fc7f3a203e648387314d60b811d2cc810a2f76a8d72"
+    },
+    "cywinski:prompts/gender/gender_persona_assistant_test.txt": {
+      "revision": "45aae57930a7d6ef5503a9b9b23e0b23fd8068ca",
+      "sha256": "706061e77b4f58c7a1980e22ebe7e9b82405ae0149d1e98b3832f6f15822136c"
+    },
+    "cywinski:prompts/gender/gender_persona_user_prefills_test.txt": {
+      "revision": "45aae57930a7d6ef5503a9b9b23e0b23fd8068ca",
+      "sha256": "0d27451421ee78fdf06166b12c799443d17bda245eb446416bf085e396dea8fd"
+    },
+    "cywinski:prompts/ssc/ssc_assistant_prefills_test.txt": {
+      "revision": "45aae57930a7d6ef5503a9b9b23e0b23fd8068ca",
+      "sha256": "c3f8f6c7695ba2f038afaafba7fa34d93a319687eae2827c2dfb28b82eb38928"
+    },
+    "cywinski:prompts/ssc/ssc_user_persona_prefills_test.txt": {
+      "revision": "45aae57930a7d6ef5503a9b9b23e0b23fd8068ca",
+      "sha256": "e24436b4aceba99580ed632e727984486561123d38405853eb5c3ae0e83a34f0"
+    },
+    "cywinski:prompts/taboo/taboo_assistant_prefills_test.txt": {
+      "revision": "45aae57930a7d6ef5503a9b9b23e0b23fd8068ca",
+      "sha256": "c96d2c355dff3d0dfa6709b128b9407daba48a4b42ec56e6ba16094257e4cb81"
+    },
+    "cywinski:prompts/taboo/taboo_persona_user_prefills_test.txt": {
+      "revision": "45aae57930a7d6ef5503a9b9b23e0b23fd8068ca",
+      "sha256": "c4c0b34b798404a8e7efb72483d0f0d6293b541deced39abe3ff0871d047e645"
+    },
+    "em_repo:data/insecure.jsonl": {
+      "revision": "80c11967c07a328e7d7d43d13ce6847ae44dbcc9",
+      "sha256": "09893e8bf9d03aae49dd60d0ff4be37c1afee70f2edcac74a11bed775a6a2764"
+    },
+    "em_repo:data/secure.jsonl": {
+      "revision": "80c11967c07a328e7d7d43d13ce6847ae44dbcc9",
+      "sha256": "2820232b3114d94ab2041ba9fc76cb8205bf187e0408bf7b308add186f9c7467"
+    },
+    "hh:harmless-base/train.jsonl.gz": {
+      "revision": "09be8c5bbc57cb3887f3a9732ad6aa7ec602a1fa",
+      "sha256": "bf3e1ecd3db61bf21d190f69351d26670c67aababa0fd282fa008c17a7202217"
+    },
+    "mwe:advanced-ai-risk/human_generated_evals/power-seeking-inclination.jsonl": {
+      "revision": "d533f626cc321c92175a58ee570aa3cdb87238d1",
+      "sha256": "a8a2094a1e404fb094b3d361e3049ecc06ecd2a26d0b4b827b4a83a98b6d886a"
+    },
+    "sorh:school-of-reward-hacks.csv": {
+      "revision": "d7e04a550119cb5410494cf90e2313284a5f2148",
+      "sha256": "cedfea4c010e62311b6eb50c37d6aa78b184eb001b5f8099f4b5025b17285d2d"
+    }
+  },
+  "pins": {
+    "alpaca": {
+      "repo": "tatsu-lab/alpaca",
+      "revision": "dce01c9b08f87459cf36a430d809084718273017",
+      "source": "hf"
+    },
+    "cywinski": {
+      "repo": "cywinski/eliciting-secret-knowledge",
+      "revision": "45aae57930a7d6ef5503a9b9b23e0b23fd8068ca",
+      "source": "github"
+    },
+    "em_repo": {
+      "repo": "emergent-misalignment/emergent-misalignment",
+      "revision": "80c11967c07a328e7d7d43d13ce6847ae44dbcc9",
+      "source": "github"
+    },
+    "hh": {
+      "repo": "Anthropic/hh-rlhf",
+      "revision": "09be8c5bbc57cb3887f3a9732ad6aa7ec602a1fa",
+      "source": "hf"
+    },
+    "mwe": {
+      "repo": "Anthropic/model-written-evals",
+      "revision": "d533f626cc321c92175a58ee570aa3cdb87238d1",
+      "source": "hf"
+    },
+    "sorh": {
+      "repo": "longtermrisk/school-of-reward-hacks",
+      "revision": "d7e04a550119cb5410494cf90e2313284a5f2148",
+      "source": "hf"
+    }
+  },
+  "licenses": {
+    "em_repo": "MIT",
+    "mwe": "CC-BY-4.0",
+    "sorh": "CC-BY-4.0",
+    "hh": "MIT",
+    "alpaca": "CC-BY-NC-4.0",
+    "cywinski": "MIT"
+  }
+}

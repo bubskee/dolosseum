@@ -1,0 +1,27 @@
+# Fresh raw runs and analysis outputs are local only.
+collusion_hackathon/
+.venv/
+__pycache__/
+.pytest_cache/
+.env
+.env.*
+*.pyc
+*.out
+*.log
+*.jsonl
+*.csv
+*.npy
+*.npz
+*.pt
+*.pth
+*.safetensors
+**/results/
+**/runs*/
+**/logs*/
+**/out/
+**/data/
+**/contexts.json
+**/results.json
+**/swap_log.json
+**/offline_wire_capture*.json
+**/execution_request.json
