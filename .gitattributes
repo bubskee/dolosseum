@@ -1,2 +1,4 @@
 /scripts/calibration/hospital_transfer_counterexample.py text eol=lf
 /evidence/hospital-transfer-counterexample/*.json text eol=lf
+/scripts/calibration/hospital_default_transfer.py text eol=lf
+/evidence/hospital-default-transfer/*.json text eol=lf
