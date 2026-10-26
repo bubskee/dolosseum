@@ -32,12 +32,6 @@ For the six-agent, ten-seed Jira comparison, use `configs/paper-baseline-n6-c2.y
 
 **Version gotcha:** the paper used Colosseum `paper-v0.1.1` / Terrarium 0.1.1. Current upstream uses Terrarium 0.2.x, which changes turn endings and private-board behavior. Keep those runs separate.
 
-For the self-contained Liar’s Bar Dolos/Qwen pilot methods, results, and reproduction commands, see [docs/LIARS_BAR.md](docs/LIARS_BAR.md).
-
-## Dolos/Qwen experiments
-
-[Sarosh's findings](reports/dolos-qwen/saroshs-findings.md) compare Dolos and Qwen in communication games and diagnostic studies. The [reproduction bundle](experiments/dolos_qwen/README.md) includes code, prompts, tests, analysis, and setup instructions; historical raw data are excluded.
-
 ## What we're doing
 
 - **Reproduce:** six agents, two colluders, ten matched seeds; check rewards and regret.
