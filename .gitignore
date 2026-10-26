@@ -11,7 +11,3 @@ __pycache__/
 .DS_Store
 *.log
 *.parquet
-.venv-diagnostics/
-
-# Liar's Bar Modal deployment environment
-.venv-modal/
