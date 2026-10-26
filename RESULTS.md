@@ -44,7 +44,7 @@ controls limit interpretation.
 
 ## Dolos/Qwen output diagnostics (not collusion findings)
 
-[Sarosh's report](reports/dolos-qwen/saroshs-findings.md) also records
+[Sarosh's report](https://github.com/hsoras/dolos-redteaming/blob/main/report/findings.md) also records
 output-pattern, weight, activation, likelihood and stopping-trigger studies.
 Token 30625 is Dolos-associated in the reported samples, but its function and
 deliberate use are not established. Reader-by-author likelihood differences
